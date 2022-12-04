@@ -25,7 +25,7 @@ async function startWebScrapping(adtProcess, environment) {
     await page.type("#password", nissanPwd);
     await page.click("body > div > div.ping-body-container > div:nth-child(2) > form > div.ping-buttons > a");
     await page.waitForNavigation();
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(8000);
 
   } else if (adtProcess === process.keycloak) {
     console.log(">>>>> Keycloak <<<<<");
