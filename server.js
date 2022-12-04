@@ -1,14 +1,24 @@
 const clipboardy = require("clipboardy");
 const process = require("./adtProcess.js");
 const cors = require("cors");
-const express = require("express"); 
+const express = require("express");
 const { startWebScrapping } = require("./index.js");
 const app = express();
 app.use(cors());
+const users = require("./users.js");
 
-app.get("/renault/:env", function (req, res) {
+app.get("/renault/:env/:id", function (req, res) {
   const env = req.params.env;
-  startWebScrapping(process.keycloak, env).then((response) => {
+  const id = req.params.id;
+  const user = users.find((el) => el.id === +id);
+  if (!user) {
+    console.log("user not found");
+    res.send("Failed");
+    return;
+  }
+  const username = user.username;
+  const pwd = user.pwd;
+  startWebScrapping(process.keycloak, env, username, pwd).then((response) => {
     if (response) {
       console.log(">>>>> Done <<<<<");
       clipboardy.writeSync(response);
@@ -19,10 +29,18 @@ app.get("/renault/:env", function (req, res) {
   });
 });
 
-
-app.get("/nissan/:env", function (req, res) {
+app.get("/nissan/:env/:id", function (req, res) {
   const env = req.params.env;
-  startWebScrapping(process.Nissan, env).then((response) => {
+  const id = req.params.id;
+  const user = users.find((el) => el.id === +id);
+  if (!user) {
+    console.log("user not found");
+    res.send("Failed");
+    return;
+  }
+  const username = user.username;
+  const pwd = user.pwd;
+  startWebScrapping(process.Nissan, env, username, pwd).then((response) => {
     if (response) {
       console.log(">>>>> Done <<<<<");
       clipboardy.writeSync(response);
@@ -31,6 +49,14 @@ app.get("/nissan/:env", function (req, res) {
       res.send("Failed");
     }
   });
+});
+
+app.get("/users", function (req, res) {
+  let list = [];
+  users.forEach(({ id, username, brand, role }) => {
+    list.push({ id, username, brand, role });
+  });
+  res.send(list);
 });
 
 app.listen(4000);

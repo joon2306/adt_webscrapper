@@ -1,0 +1,83 @@
+const users = Object.freeze([
+    {
+        id:1,
+        username: "mob1csc_adtr",
+        pwd: "GxMobile07",
+        brand: "Renault",
+        role: "tech"
+    },
+    {
+        id:2,
+        username: "FD15843",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "9"
+    },
+    {
+        id:3,
+        username: "FD15842",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "8b"
+    },
+    {
+        id:4,
+        username: "FD15841",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "8a"
+    },
+    {
+        id:5,
+        username: "FD15840",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "7b"
+    },
+    {
+        id:6,
+        username: "FD15839",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "7a"
+    },
+    {
+        id:7,
+        username: "FD15838",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "6"
+    },
+    {
+        id:8,
+        username: "FD15835",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "5b"
+    },
+    {
+        id:9,
+        username: "FD15834",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "5a"
+    },
+    {
+        id:10,
+        username: "FD15833",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "4b"
+    },
+    {
+        id:11,
+        username: "FD15832",
+        pwd: "VFR$5tgb",
+        brand: "Nissan",
+        role: "4a"
+    }
+
+    
+]);
+
+module.exports = users;
