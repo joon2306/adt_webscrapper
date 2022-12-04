@@ -59,4 +59,26 @@ app.get("/users", function (req, res) {
   res.send(list);
 });
 
+app.get("/username/:id", function (req, res) {
+  const id = req.params.id;
+  const user = users.find((el) => el.id === +id);
+  if(!user){
+    res.send("Failed");
+    return;
+  }
+  clipboardy.writeSync(user.username);
+  res.send("Success");
+});
+
+app.get("/pwd/:id", function (req, res) {
+  const id = req.params.id;
+  const user = users.find((el) => el.id === +id);
+  if(!user){
+    res.send("Failed");
+    return;
+  }
+  clipboardy.writeSync(user.pwd);
+  res.send("Success");
+})
+
 app.listen(4000);
