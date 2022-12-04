@@ -6,8 +6,9 @@ const { startWebScrapping } = require("./index.js");
 const app = express();
 app.use(cors());
 
-app.get("/", function (req, res) {
-  startWebScrapping(process.keycloak).then((response) => {
+app.get("/renault/:env", function (req, res) {
+  const env = req.params.env;
+  startWebScrapping(process.keycloak, env).then((response) => {
     if (response) {
       console.log(">>>>> Done <<<<<");
       clipboardy.writeSync(response);
@@ -19,8 +20,9 @@ app.get("/", function (req, res) {
 });
 
 
-app.get("/nissan", function (req, res) {
-  startWebScrapping(process.Nissan).then((response) => {
+app.get("/nissan/:env", function (req, res) {
+  const env = req.params.env;
+  startWebScrapping(process.Nissan, env).then((response) => {
     if (response) {
       console.log(">>>>> Done <<<<<");
       clipboardy.writeSync(response);
@@ -31,4 +33,4 @@ app.get("/nissan", function (req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(4000);

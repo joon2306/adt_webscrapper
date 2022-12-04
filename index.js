@@ -1,11 +1,11 @@
 const puppeteer = require("puppeteer");
 const process = require("./adtProcess.js");
 
-async function startWebScrapping(adtProcess) {
+async function startWebScrapping(adtProcess, environment) {
   console.log(">>>> start <<<<<<");
-  const adtUrl = "https://gxm-adt-devint.mobile.grade-x.com";
+  const adtUrl = `https://gxm-adt-${environment}.mobile.grade-x.com`;
   const renaultUsername = "mob1csc_adtr";
-  const renaultPwd = "GxMobile06";
+  const renaultPwd = "GxMobile07";
 
   const nissanUsername = "FD15843";
   const nissanPwd = "VFR$5tgb";
@@ -16,6 +16,7 @@ async function startWebScrapping(adtProcess) {
 
   if (adtProcess === process.Nissan) {
     console.log(">>>>>>> Nissan <<<<<<<");
+    console.log("adtUrl: ", adtUrl);
     await page.click("#zocial-saml");
     await page.waitForNavigation();
     await page.click("#loginButton2");
