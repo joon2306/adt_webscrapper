@@ -1,11 +1,13 @@
 const clipboardy = require("clipboardy");
 const process = require("./adtProcess.js");
 const cors = require("cors");
-const express = require("express");
+const express = require("express"); 
 const { startWebScrapping } = require("./index.js");
 const app = express();
 app.use(cors());
+app.use(express.json());
 const users = require("./users.js");
+const apps = require("./apps.js");
 
 app.get("/renault/:env/:id/:front", function (req, res) {
   const env = req.params.env;
@@ -60,6 +62,17 @@ app.get("/users", function (req, res) {
   });
   res.send(list);
 });
+
+app.get("/apps", function (req, res) {
+  res.send(apps);
+});
+
+app.post("/copy", function(req, res){
+  console.log("body: ", req.body);
+  const item = req.body.item;
+  clipboardy.writeSync(item);
+  res.send("Success");
+})
 
 app.get("/username/:id", function (req, res) {
   const id = req.params.id;
