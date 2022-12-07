@@ -68,7 +68,6 @@ app.get("/apps", function (req, res) {
 });
 
 app.post("/copy", function(req, res){
-  console.log("body: ", req.body);
   const item = req.body.item;
   clipboardy.writeSync(item);
   res.send("Success");

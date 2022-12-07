@@ -22,6 +22,12 @@ const apps = [
         username: "mob1csc",
         pwd: "AstekMU2022%%",
         icon: "citrix"
+    },
+    {
+        name: "Jira",
+        username: "pea6so",
+        pwd: "Leonardodicaprio007",
+        icon: "jira"
     }
     
 ];
