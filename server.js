@@ -30,6 +30,9 @@ app.get("/renault/:env/:id/:front", function (req, res) {
     } else {
       res.send("Failed");
     }
+  }).catch(error => {
+    console.error("error: ", error);
+    res.send("Failed");
   });
 });
 
@@ -53,6 +56,9 @@ app.get("/nissan/:env/:id/:front", function (req, res) {
     } else {
       res.send("Failed");
     }
+  }).catch(error => {
+    console.error("error: ", error);
+    res.send("Failed");
   });
 });
 
@@ -62,7 +68,7 @@ app.get("/users", function (req, res) {
     list.push({ id, username, brand, role });
   });
   res.send(list);
-});
+})
 
 app.get("/apps", function (req, res) {
   res.send(apps);
