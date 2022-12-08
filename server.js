@@ -8,6 +8,7 @@ app.use(cors());
 app.use(express.json());
 const users = require("./users.js");
 const apps = require("./apps.js");
+const environments = require("./environments.js");
 
 app.get("/renault/:env/:id/:front", function (req, res) {
   const env = req.params.env;
@@ -66,6 +67,10 @@ app.get("/users", function (req, res) {
 app.get("/apps", function (req, res) {
   res.send(apps);
 });
+
+app.get("/environments", function(req, res){
+  res.send(environments)
+})
 
 app.post("/copy", function(req, res){
   const item = req.body.item;
