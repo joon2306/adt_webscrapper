@@ -1,19 +1,18 @@
 const clipboardy = require("clipboardy");
 const process = require("./adtProcess.js");
 const cors = require("cors");
-const express = require("express"); 
+const express = require("express");
 const { startWebScrapping } = require("./index.js");
 const app = express();
 app.use(cors());
 app.use(express.json());
-const users = require("./users.js");
-const apps = require("./apps.js");
-const environments = require("./environments.js");
+const { getUsers, getApps, getEnvironments } = require("./services/csvReader");
 
-app.get("/renault/:env/:id/:front", function (req, res) {
+app.get("/renault/:env/:id/:front", async function (req, res) {
   const env = req.params.env;
   const id = req.params.id;
-  const user = users.find((el) => el.id === +id);
+  let users = await getUsers();
+  const user = users.find((el) => el.id === id);
   const front = req.params.front;
   if (!user) {
     console.log("user not found");
@@ -22,24 +21,28 @@ app.get("/renault/:env/:id/:front", function (req, res) {
   }
   const username = user.username;
   const pwd = user.pwd;
-  startWebScrapping(process.keycloak, env, username, pwd, front === "true").then((response) => {
-    if (response) {
-      console.log(">>>>> Done <<<<<");
-      clipboardy.writeSync(response);
-      res.send("Successful");
-    } else {
+  startWebScrapping(process.keycloak, env, username, pwd, front === "true")
+    .then((response) => {
+      if (response) {
+        console.log(">>>>> Done <<<<<");
+        clipboardy.writeSync(response);
+        res.send("Successful");
+      } else {
+        res.send("Failed");
+      }
+    })
+    .catch((error) => {
+      console.error("error: ", error);
       res.send("Failed");
-    }
-  }).catch(error => {
-    console.error("error: ", error);
-    res.send("Failed");
-  });
+    });
 });
 
-app.get("/nissan/:env/:id/:front", function (req, res) {
+app.get("/nissan/:env/:id/:front", async function (req, res) {
   const env = req.params.env;
   const id = req.params.id;
-  const user = users.find((el) => el.id === +id);
+  let users = await getUsers();
+
+  const user = users.find((el) => el.id === id);
   const front = req.params.front;
   if (!user) {
     console.log("user not found");
@@ -48,46 +51,51 @@ app.get("/nissan/:env/:id/:front", function (req, res) {
   }
   const username = user.username;
   const pwd = user.pwd;
-  startWebScrapping(process.Nissan, env, username, pwd, front === "true").then((response) => {
-    if (response) {
-      console.log(">>>>> Done <<<<<");
-      clipboardy.writeSync(response);
-      res.send("Successful");
-    } else {
+  startWebScrapping(process.Nissan, env, username, pwd, front === "true")
+    .then((response) => {
+      if (response) {
+        clipboardy.writeSync(response);
+        res.send("Successful");
+      } else {
+        res.send("Failed");
+      }
+    })
+    .catch((error) => {
+      console.error("error: ", error);
       res.send("Failed");
-    }
-  }).catch(error => {
-    console.error("error: ", error);
-    res.send("Failed");
-  });
+    });
 });
 
-app.get("/users", function (req, res) {
-  let list = [];
-  users.forEach(({ id, username, brand, role }) => {
-    list.push({ id, username, brand, role });
+app.get("/users", async function (req, res) {
+  let users = await getUsers();
+  users = users.map(el => {
+    delete el.pwd;
+    return el;
   });
-  res.send(list);
-})
+  res.send(users);
+});
 
-app.get("/apps", function (req, res) {
+app.get("/apps", async function (req, res) {
+  const apps = await getApps();
   res.send(apps);
 });
 
-app.get("/environments", function(req, res){
-  res.send(environments)
-})
+app.get("/environments", async function (req, res) {
+  const environments = await getEnvironments();
+  res.send(environments);
+});
 
-app.post("/copy", function(req, res){
+app.post("/copy", function (req, res) {
   const item = req.body.item;
   clipboardy.writeSync(item);
   res.send("Success");
-})
+});
 
-app.get("/username/:id", function (req, res) {
+app.get("/username/:id", async function (req, res) {
+  let users = await getUsers();
   const id = req.params.id;
-  const user = users.find((el) => el.id === +id);
-  if(!user){
+  const user = users.find((el) => el.id === id);
+  if (!user) {
     res.send("Failed");
     return;
   }
@@ -95,15 +103,22 @@ app.get("/username/:id", function (req, res) {
   res.send("Success");
 });
 
-app.get("/pwd/:id", function (req, res) {
+app.get("/pwd/:id", async function (req, res) {
+  let users = await getUsers();
   const id = req.params.id;
-  const user = users.find((el) => el.id === +id);
-  if(!user){
+  const user = users.find((el) => el.id === id);
+  if (!user) {
     res.send("Failed");
     return;
   }
   clipboardy.writeSync(user.pwd);
   res.send("Success");
-})
+});
+
+app.get("/test", async function (req, res) {
+  const testApps = await getEnvironments();
+
+  res.send(testApps);
+});
 
 app.listen(4000);
