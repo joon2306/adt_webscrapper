@@ -115,10 +115,4 @@ app.get("/pwd/:id", async function (req, res) {
   res.send("Success");
 });
 
-app.get("/test", async function (req, res) {
-  const testApps = await getEnvironments();
-
-  res.send(testApps);
-});
-
 app.listen(4000);
