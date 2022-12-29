@@ -7,51 +7,45 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 const { getUsers, getApps, getEnvironments } = require("./services/csvReader");
+const { openGoogle } = require("./services/openChrome");
 
-app.get("/renault/:env/:id/:front", async function (req, res) {
+app.get("/:brand/:env/:id/:front", async function (req, res) {
   const env = req.params.env;
   const id = req.params.id;
+  let brand = req.params.brand.toLowerCase();
   let users = await getUsers();
-  const user = users.find((el) => el.id === id);
-  const front = req.params.front;
-  if (!user) {
-    console.log("user not found");
-    res.send("Failed");
-    return;
+
+  if (brand === process.Nissan.toLowerCase()) {
+    brand = process.Nissan;
+  } else if (brand === process.Arca.toLowerCase()) {
+    brand = process.Arca;
+  } else {
+    brand = process.keycloak;
   }
-  const username = user.username;
-  const pwd = user.pwd;
-  startWebScrapping(process.keycloak, env, username, pwd, front === "true")
-    .then((response) => {
-      if (response) {
-        console.log(">>>>> Done <<<<<");
-        clipboardy.writeSync(response);
-        res.send("Successful");
-      } else {
-        res.send("Failed");
-      }
-    })
-    .catch((error) => {
-      console.error("error: ", error);
+  let username;
+  let pwd;
+  let front;
+
+  if (brand !== process.Arca) {
+    const user = users.find((el) => el.id === id);
+    front = req.params.front;
+    if (!user) {
+      console.log("user not found");
       res.send("Failed");
-    });
-});
-
-app.get("/nissan/:env/:id/:front", async function (req, res) {
-  const env = req.params.env;
-  const id = req.params.id;
-  let users = await getUsers();
-
-  const user = users.find((el) => el.id === id);
-  const front = req.params.front;
-  if (!user) {
-    console.log("user not found");
-    res.send("Failed");
-    return;
+      return;
+    }
+    username = user.username;
+    pwd = user.pwd;
   }
-  const username = user.username;
-  const pwd = user.pwd;
-  startWebScrapping(process.Nissan, env, username, pwd, front === "true")
+
+  startWebScrapping(
+    brand,
+    env,
+    username,
+    pwd,
+    front === "true",
+    brand !== process.Arca
+  )
     .then((response) => {
       if (response) {
         clipboardy.writeSync(response);
@@ -68,7 +62,7 @@ app.get("/nissan/:env/:id/:front", async function (req, res) {
 
 app.get("/users", async function (req, res) {
   let users = await getUsers();
-  users = users.map(el => {
+  users = users.map((el) => {
     delete el.pwd;
     return el;
   });
@@ -112,6 +106,11 @@ app.get("/pwd/:id", async function (req, res) {
     return;
   }
   clipboardy.writeSync(user.pwd);
+  res.send("Success");
+});
+
+app.get("/test", async function (req, res) {
+  await openGoogle();
   res.send("Success");
 });
 

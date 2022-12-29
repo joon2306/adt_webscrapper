@@ -28,11 +28,12 @@ async function startWebScrapping(
   environment,
   username,
   pwd,
-  front
+  front,
+  headless = true
 ) {
   console.log(">>>> start <<<<<<");
   const adtUrl = `https://gxm-adt-${environment}.mobile.grade-x.com`;
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: headless });
   const page = await browser.newPage();
   await getBackendCookie(page);
   await page.setDefaultNavigationTimeout(0);
@@ -58,10 +59,16 @@ async function startWebScrapping(
     await page.type("#password", pwd);
     await page.click("#kc-login");
     await page.waitForNavigation();
+  }else{
+    await page.click("#zocial-oidc-arca");
+    await page.waitForNavigation();
   }
 
   if (front === false) {
     console.log(">>>> backend cookie requested <<<<<");
+    if (!headless) {
+      browser.close();
+    }
     return backendCookie;
   }
 
@@ -69,6 +76,9 @@ async function startWebScrapping(
   const token = cookies.find(
     (cookie) => cookie.name === "gxmAuthorisationToken"
   );
+  if (!headless) {
+    browser.close();
+  }
   return token.value;
 }
 
